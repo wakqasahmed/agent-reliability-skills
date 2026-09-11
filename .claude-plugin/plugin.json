@@ -4,6 +4,7 @@
   "skills": [
     "skills/00-agent-reliability-guardrails",
     "skills/01-answer-surface-definition",
-    "skills/02-input-exposure-inventory"
+    "skills/02-input-exposure-inventory",
+    "skills/03-abstention-policy-design"
   ]
 }
