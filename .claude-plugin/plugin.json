@@ -3,6 +3,7 @@
   "description": "Agent skills for operating a customer-facing AI agent reliably: answer scoping and abstention, sampled accuracy measurement, error budgets with burn-rate alerting, and accuracy ownership",
   "skills": [
     "skills/00-agent-reliability-guardrails",
-    "skills/01-answer-surface-definition"
+    "skills/01-answer-surface-definition",
+    "skills/02-input-exposure-inventory"
   ]
 }

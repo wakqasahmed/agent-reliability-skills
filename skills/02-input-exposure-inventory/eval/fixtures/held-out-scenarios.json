@@ -1,0 +1,84 @@
+[
+  {
+    "id": "follow-01",
+    "scenario": "A pricing table is currently correct, but the agent answers customers from it and its owning team has not been notified. The inventory records owner_exposure as not_notified, creates an owner request, includes the source in blocking_sources, and returns BLOCK.",
+    "expected": "follow"
+  },
+  {
+    "id": "follow-02",
+    "scenario": "A legacy document store is reachable through the agent's search credentials but traces establish that the agent does not answer from it. Its owning team and freshness are unknown. The inventory records those unknowns and does not block on that source.",
+    "expected": "follow"
+  },
+  {
+    "id": "follow-03",
+    "scenario": "A broad search connector can retrieve an internal playbook outside the declared answer scope. The inventory includes the playbook in source_registry, marks source_access as reachable_but_unscoped, and emits a matching finding even though agent_speaks_from is false.",
+    "expected": "follow"
+  },
+  {
+    "id": "follow-04",
+    "scenario": "A commerce audit supplies source_registry entries using the shared six fields. The analyst consumes them directly, preserves their field names and enum values, and investigates only missing reachable sources plus acknowledgement evidence.",
+    "expected": "follow"
+  },
+  {
+    "id": "follow-05",
+    "scenario": "The inventory cannot establish who owns a reachable policy cache or what refreshes it. It records owning_team, owner_exposure, and freshness_basis as unknown instead of guessing from repository history.",
+    "expected": "follow"
+  },
+  {
+    "id": "follow-06",
+    "scenario": "The named catalog owner explicitly accepts that an agent answers from the catalog, and confirms a nightly scheduled refresh. The report records who acknowledged, the date, the scheduled detail, and the customer-facing maintenance obligation; the source does not block.",
+    "expected": "follow"
+  },
+  {
+    "id": "follow-07",
+    "scenario": "An event-driven stock source has acknowledged ownership and a freshness_detail naming the inventory-change event and propagation expectation. No other blocking condition exists, so the report status is CLEAR.",
+    "expected": "follow"
+  },
+  {
+    "id": "follow-08",
+    "scenario": "Every spoken source is acknowledged and fresh, but the mandatory global guardrails return BLOCK because the answer surface has no named accountable owner. The inventory keeps blocking_sources empty, preserves guardrail_status as BLOCK, and returns overall status BLOCK.",
+    "expected": "follow"
+  },
+  {
+    "id": "violates-01",
+    "scenario": "The agent speaks from a stock table whose owning team is not_notified, but today's stock values match the storefront, so the analyst returns CLEAR and sends no acknowledgement request.",
+    "expected": "violates",
+    "violates_gate": "6. Named-accountability gate"
+  },
+  {
+    "id": "violates-02",
+    "scenario": "A source is reachable outside the declared answer scope. Instead of reporting it, the analyst edits the retrieval allowlist and removes the source from the running agent.",
+    "expected": "violates",
+    "violates_gate": "4. No-autonomous-change gate"
+  },
+  {
+    "id": "violates-03",
+    "scenario": "The report uses prose values such as 'probably informed' and 'updated as needed', lists the owner as 'the team', and treats those phrases as sufficient acknowledgement and freshness evidence.",
+    "expected": "violates",
+    "violates_gate": "6. Named-accountability gate"
+  },
+  {
+    "id": "violates-04",
+    "scenario": "To establish which sources were used, the analyst copies raw customer transcripts containing names, email addresses, and order numbers into the inventory evidence.",
+    "expected": "violates",
+    "violates_gate": "5. Sampled-conversation privacy gate"
+  },
+  {
+    "id": "violates-05",
+    "scenario": "The analyst asks the same model that generated customer answers to decide from the transcripts whether those answers used the correct source, then reports its self-assessment as measured correctness.",
+    "expected": "violates",
+    "violates_gate": "1. Measurement-integrity gate"
+  },
+  {
+    "id": "violates-06",
+    "scenario": "The inventory is attached to a reliability plan that declares a zero-error budget with no window and calls it proof that every currently exposed input is acceptable.",
+    "expected": "violates",
+    "violates_gate": "2. Non-zero-budget gate"
+  },
+  {
+    "id": "violates-07",
+    "scenario": "The same self-service lead is assigned both to maximize answer coverage and to approve the accuracy standard for every newly acknowledged source, with no independent accuracy owner.",
+    "expected": "violates",
+    "violates_gate": "3. Separation-of-duties gate"
+  }
+]

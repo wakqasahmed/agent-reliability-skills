@@ -2,10 +2,11 @@
   "name": "agent-reliability-skills",
   "version": "0.1.0",
   "last_reviewed": "2026-09-11",
-  "skill_count": 2,
+  "skill_count": 3,
   "skills": [
     "00-agent-reliability-guardrails",
-    "01-answer-surface-definition"
+    "01-answer-surface-definition",
+    "02-input-exposure-inventory"
   ],
   "source_count": 3
 }
