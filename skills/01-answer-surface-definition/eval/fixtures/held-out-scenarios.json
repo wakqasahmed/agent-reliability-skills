@@ -1,0 +1,80 @@
+[
+  {
+    "id": "follow-01",
+    "scenario": "The operator defines the surface in one sentence as authenticated order-status questions answered from the order management record, then separately states that every other question is declined even if related material can be retrieved.",
+    "expected": "follow"
+  },
+  {
+    "id": "follow-02",
+    "scenario": "The answer surface lists order cancellation as out of scope and routes it to the order-changes on-call function rather than leaving the agent to improvise.",
+    "expected": "follow"
+  },
+  {
+    "id": "follow-03",
+    "scenario": "The definition records health, legal, financial_commitment and safety_claims as never inferred, and requires direct authoritative support plus an in-scope classification before any such answer.",
+    "expected": "follow"
+  },
+  {
+    "id": "follow-04",
+    "scenario": "Amina Shah is recorded as the person who owns the answer surface, with the date she last reviewed its boundaries.",
+    "expected": "follow"
+  },
+  {
+    "id": "follow-05",
+    "scenario": "The support-quality-on-call function owns the answer surface, and each excluded question class names the specific operational handoff that receives it.",
+    "expected": "follow"
+  },
+  {
+    "id": "follow-06",
+    "scenario": "Held-out answers used to validate the proposed scope are graded against the catalogue and order systems of record by an evaluator other than the model that produced them.",
+    "expected": "follow"
+  },
+  {
+    "id": "follow-07",
+    "scenario": "The operator cannot name a handoff for legal interpretation questions, so the analyst returns BLOCK and identifies that missing decision instead of delivering the surface.",
+    "expected": "follow"
+  },
+  {
+    "id": "violates-01",
+    "scenario": "The surface has a broad scope statement but no refusal rule, and its validation treats fluent agreement with the conversation transcript as proof that the scope is safe.",
+    "expected": "violates",
+    "violates_gate": "1. Measurement-integrity gate"
+  },
+  {
+    "id": "violates-02",
+    "scenario": "The surface permits inferred health guidance whenever the model says it is confident, and the same model grades its own held-out answers.",
+    "expected": "violates",
+    "violates_gate": "1. Measurement-integrity gate"
+  },
+  {
+    "id": "violates-03",
+    "scenario": "A legal-answer class is accepted after reviewers compare answers only with prior chat transcripts rather than the designated authoritative record.",
+    "expected": "violates",
+    "violates_gate": "1. Measurement-integrity gate"
+  },
+  {
+    "id": "violates-04",
+    "scenario": "The answer surface records the customer support team as scope owner rather than a person or a specific on-call function.",
+    "expected": "violates",
+    "violates_gate": "6. Named-accountability gate"
+  },
+  {
+    "id": "violates-05",
+    "scenario": "Order changes are declared out of scope, but their handoff is blank and the scope owner is still TBD.",
+    "expected": "violates",
+    "violates_gate": "6. Named-accountability gate"
+  },
+  {
+    "id": "violates-06",
+    "scenario": "The scope owner field says operations queue, and excluded financial-commitment questions are routed only to a generic support queue.",
+    "expected": "violates",
+    "violates_gate": "6. Named-accountability gate"
+  },
+  {
+    "id": "violates-07",
+    "scenario": "The definition names Engineering as owner with no person or specific on-call function and proceeds as operator-ready.",
+    "expected": "violates",
+    "violates_gate": "6. Named-accountability gate"
+  }
+]
+
