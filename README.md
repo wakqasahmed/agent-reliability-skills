@@ -46,8 +46,9 @@ Download the repository as a ZIP from **Code → Download ZIP**, unzip it, and c
 | Skill | What it covers |
 |---|---|
 | [`00-agent-reliability-guardrails`](skills/00-agent-reliability-guardrails/SKILL.md) | Measurement integrity, non-zero budgets, separation of duties, no autonomous change, sampled-conversation privacy, named accountability. |
+| [`01-answer-surface-definition`](skills/01-answer-surface-definition/SKILL.md) | Answered question class, unconditional refusal rule, out-of-scope handoffs, safety-relevant no-inference classes, and named scope ownership. |
 
-More skills are being added incrementally through tracked issues — answer-surface definition, input exposure inventory, abstention policy design, accuracy sampling plans, error budgets and burn-rate alerting, accuracy ownership, and failure-to-regression intake. See [Issues](https://github.com/wakqasahmed/agent-reliability-skills/issues) for current progress; this table is the source of truth for what actually ships today.
+More skills are being added incrementally through tracked issues — input exposure inventory, abstention policy design, accuracy sampling plans, error budgets and burn-rate alerting, accuracy ownership, and failure-to-regression intake. See [Issues](https://github.com/wakqasahmed/agent-reliability-skills/issues) for current progress; this table is the source of truth for what actually ships today.
 
 ## The four things to have before an agent answers a customer
 
