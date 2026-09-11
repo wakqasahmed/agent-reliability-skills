@@ -6,12 +6,28 @@ evidence observed during a measurement do not need citations.
 
 Freshness window: 180 days.
 
+## SRC-CHOW-REJECT-TRADEOFF
+
+- Publisher: IEEE
+- Official URL: https://doi.org/10.1109/TIT.1970.1054406
+- Supported claim: Classification with a reject option has an error/reject tradeoff, and an optimum rejection rule relates error and reject probabilities.
+- Specification version: IEEE Transactions on Information Theory 16(1), 1970
+- Last verified: 2026-09-11
+
 ## SRC-CMA-AI-AGENTS
 
 - Publisher: Competition and Markets Authority (UK)
 - Official URL: https://www.gov.uk/government/publications/complying-with-consumer-law-when-using-ai-agents
 - Supported claim: A business that uses an AI agent remains responsible for what that agent does, including when the agent acts unlawfully.
 - Specification version: Guidance published 9 March 2026
+- Last verified: 2026-09-11
+
+## SRC-OPENAI-HALLUCINATION-EVALS
+
+- Publisher: OpenAI
+- Official URL: https://openai.com/index/why-language-models-hallucinate/
+- Supported claim: Accuracy-only grading encourages guessing by giving abstentions no credit; evaluations should penalize confident errors more than expressions of uncertainty.
+- Specification version: Publication dated 5 September 2025
 - Last verified: 2026-09-11
 
 ## SRC-SRE-BURN-RATE

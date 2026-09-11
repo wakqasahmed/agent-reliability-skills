@@ -34,6 +34,16 @@ REQUIRED_CITATIONS: tuple[tuple[Path, str, tuple[str, ...]], ...] = (
         "sufficient independence to maintain objectivity",
         ("SRC-SR-26-2",),
     ),
+    (
+        Path("skills/03-abstention-policy-design/SKILL.md"),
+        "Treat abstention as an operating point between error and rejection",
+        ("SRC-CHOW-REJECT-TRADEOFF",),
+    ),
+    (
+        Path("skills/03-abstention-policy-design/SKILL.md"),
+        "penalize confident errors more than abstentions",
+        ("SRC-OPENAI-HALLUCINATION-EVALS",),
+    ),
 )
 
 
