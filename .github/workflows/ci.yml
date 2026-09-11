@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  skills:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify canonical README
+        run: |
+          grep -q 'npx skills@latest add wakqasahmed/agent-reliability-skills' README.md
+      - name: Validate source ledger and citations
+        run: |
+          python3 scripts/validate-sources.py
+          python3 scripts/validate-citations.py
+      - name: Validate plugin and shared guardrails
+        run: |
+          python3 scripts/validate-plugin.py
+          python3 -m unittest discover tests
+      - name: Run deterministic evals
+        run: |
+          for eval_script in skills/*/eval/run-eval.sh; do
+            bash "$eval_script"
+          done
