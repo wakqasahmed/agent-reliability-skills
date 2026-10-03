@@ -277,11 +277,19 @@ for phrase in (
     "The agent must never be wrong.",
     "Aim for perfect accuracy.",
     "Budget is 0% errors.",
+    "Target 100 percent accuracy.",
+    "The error budget is 0.0% of answers.",
+    "We want a zero budget.",
+    "The budget: none.",
 ):
     add(0, f"zero target in prose: {phrase}",
         lambda r, phrase=phrase: r["recommendations"][0].update(recommended_action=phrase))
 
 # Section 1: derivation and day-one breach.
+add(1, "measurement lower bound understated to dodge the breach test",
+    lambda r: r["measurements"][0]["interval_bounds"].update(lower=0.0))
+add(1, "measurement quotes a Wald interval",
+    lambda r: r["measurements"][0]["interval_bounds"].update(method="wald", lower=0.0064))
 add(1, "derived_from missing", delete_from(budget, "derived_from"))
 add(1, "derived_from names no measurement", set_in(budget, "derived_from", "m-does-not-exist"))
 add(1, "derived_from blank", set_in(budget, "derived_from", ""))
@@ -348,6 +356,8 @@ for label, name in (
 ):
     add(3, f"fast burn pages a {label}", set_in(fast, "pages", name))
 add(3, "slow burn reaches a team", set_in(slow, "pages", "Support team"))
+add(3, "fast burn reaches a squad", set_in(fast, "pages", "Support squad"))
+add(3, "fast burn reaches a customer support desk", set_in(fast, "pages", "Customer support"))
 add(3, "slow burn reaches nobody", delete_from(slow, "pages"))
 add(3, "pages is not a string", set_in(fast, "pages", ["order-support-on-call"]))
 
@@ -440,6 +450,12 @@ positive_controls.append((
     "recommendation that merely names the zero-budget rule", all_sections,
     report_with(lambda r: r["recommendations"][0].update(
         recommended_action="Keep the budget non-zero and tied to the measurement.")),
+))
+
+positive_controls.append((
+    "recommendation that quotes a small non-zero budget", all_sections,
+    report_with(lambda r: r["recommendations"][0].update(
+        recommended_action="The error budget of 0.04 applies; a budget: 0.05 would be looser.")),
 ))
 
 failures = []

@@ -36,7 +36,7 @@ jq -e '
   (.error_budget.window | type == "string" and test("^[1-9][0-9]*[hdw]$")) and
   ([.. | strings]
    | all(ascii_downcase
-         | test("zero[ -](tolerance|error|defect|incident)|no (errors?|mistakes|wrong answers?|incorrect answers?|bad answers?) (are |is )?(allowed|permitted|acceptable|tolerated)|100 ?% ?(accura|correct|right)|perfect accuracy|never (be )?wrong|error budget (of|is|=) ?(0|zero|none|nil)|(^|[^0-9.])0 ?% ?(error|failure|wrong|budget)") | not))
+         | test("zero[ -](tolerance|error|defect|incident)|no (errors?|mistakes|wrong answers?|incorrect answers?|bad answers?) (are |is )?(allowed|permitted|acceptable|tolerated)|100 ?(%|percent|per ?cent) ?(accura|correct|right)|accuracy (of|at|target of) 100|perfect accuracy|never (be )?wrong|(budget|target|tolerance)( (of|is)| ?[=:]) ?(0(?![.0-9]*[1-9])|zero\\b|none\\b|nil\\b)|zero budget|(^|[^0-9.])0(\\.0+)? ?% ?(error|failure|wrong|budget)") | not))
 ' "$REPORT"
 ```
 
@@ -44,8 +44,10 @@ jq -e '
 
 `derived_from` must name exactly one measurement `id` in `measurements[]` (the output of
 `04-accuracy-sampling-plan`). When the budget is below that measurement's Wilson lower bound the
-report must say `already_in_breach`; otherwise `not_proven_in_breach`. A breach reported as
-within range is accepted silently, which this check rejects.
+report must say `already_in_breach`; otherwise `not_proven_in_breach`. The
+lower bound is recomputed from the measurement's `error_rate` and `sample_size`, so a budget cannot
+escape the breach test by quoting a looser bound. A breach reported as within range is accepted
+silently, which this check rejects.
 
 ```bash
 jq -e '
@@ -56,14 +58,24 @@ jq -e '
     elif $u == "percent_of_answers" then $v / 100
     elif $u == "errors_per_1000_answers" then $v / 1000
     else null end;
+  def zfor($level): ({"0.9": 1.644854, "0.95": 1.959964, "0.99": 2.575829})[($level | tostring)];
+  def absv: if . < 0 then -. else . end;
+  def wilson_lower($p; $n; $z):
+    (1 + $z * $z / $n) as $d
+    | ((($p + $z * $z / (2 * $n)) / $d)
+       - ($z * (($p * (1 - $p) / $n) + ($z * $z / (4 * $n * $n)) | sqrt) / $d));
   .error_budget.derived_from as $id |
   (.error_budget | budget_fraction) as $b |
   ($b != null) and
   (.measurements? | type == "array") and
   ([.measurements[] | select(.id == $id)] | length == 1) and
   ([.measurements[] | select(.id == $id)][0] as $m |
-    ($m.sample_size | type == "number" and . > 0) and
+    ($m.sample_size | type == "number" and . > 0 and floor == .) and
+    ($m.error_rate | type == "number" and . >= 0 and . <= 1) and
+    ($m.interval_bounds.method == "wilson") and
+    (zfor($m.interval_bounds.level) != null) and
     ($m.interval_bounds.lower | type == "number") and
+    ((($m.interval_bounds.lower - wilson_lower($m.error_rate; $m.sample_size; zfor($m.interval_bounds.level))) | absv) <= 0.001) and
     (($b < $m.interval_bounds.lower) as $breach |
       (.error_budget.baseline_status ==
         (if $breach then "already_in_breach" else "not_proven_in_breach" end)) and
@@ -125,7 +137,7 @@ jq -e '
   def named:
     type == "string" and test("\\S") and
     (ascii_downcase | gsub("^\\s+|\\s+$"; "") |
-      test("^(the )?(tbd|todo|pending|unknown|n/?a|none|owner|someone|somebody|person|named person|everyone|support|engineering|operations|product|oncall|on[ _-]?call( function)?)$|^#|\\b(team|teams|department|group|queue|distribution|dl|mailing list|inbox|alias|channel|everyone)\\b") | not);
+      test("^(the )?(tbd|todo|pending|unknown|n/?a|none|owner|someone|somebody|person|named person|everyone|support|engineering|operations|product|oncall|on[ _-]?call( function)?)$|^#|^(the )?customer (support|service|care|success)( (desk|ops|operations))?$|\\b(team|teams|squad|department|group|org|organi[sz]ation|queue|distribution|dl|mailing list|inbox|alias|channel|everyone|everybody|all[- ]hands)\\b") | not);
   (.alerts? | type == "array" and length > 0) and
   all(.alerts[]; .pages | named)
 ' "$REPORT"
@@ -145,7 +157,7 @@ jq -e '
   def named:
     substantive and
     (ascii_downcase | gsub("^\\s+|\\s+$"; "") |
-      test("^(the )?(owner|someone|somebody|person|named person|everyone|support|engineering|operations|product|oncall|on[ _-]?call( function)?)$|^#|\\b(team|teams|department|group|queue|distribution|dl|mailing list|inbox|alias|channel|everyone)\\b") | not);
+      test("^(the )?(owner|someone|somebody|person|named person|everyone|support|engineering|operations|product|oncall|on[ _-]?call( function)?)$|^#|^(the )?customer (support|service|care|success)( (desk|ops|operations))?$|\\b(team|teams|squad|department|group|org|organi[sz]ation|queue|distribution|dl|mailing list|inbox|alias|channel|everyone|everybody|all[- ]hands)\\b") | not);
   .exhaustion_policy as $p |
   ($p | type == "object") and
   ($p.trigger | substantive) and
