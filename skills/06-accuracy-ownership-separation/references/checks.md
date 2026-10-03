@@ -35,7 +35,7 @@ jq -e '
   def named_role:
     type == "string" and (normalized | length > 0) and
     (normalized | test("^(the )?(tbd|todo|pending|unknown|na|none|owner|someone|somebody|person|named person|accuracy owner|coverage owner|support|engineering|operations|product|oncall|on call( function)?)$") | not) and
-    (normalized | test("\\b(team|teams|department|group|queue|committee|board|council|everyone|distribution list|mailing list)\\b") | not);
+    (normalized | test("\\b(team|teams|squad|department|group|org|organi[sz]ation|queue|committee|board|council|everyone|everybody|all[- ]hands|distribution list|mailing list)\\b") | not);
   (.ownership.accuracy_owner | named_role) and
   (.ownership.coverage_owner | named_role) and
   ((.ownership.accuracy_owner | compact) != (.ownership.coverage_owner | compact))
@@ -69,7 +69,7 @@ jq -e '
   def named_role:
     type == "string" and (normalized | length > 0) and
     (normalized | test("^(the )?(tbd|todo|pending|unknown|na|none|owner|someone|somebody|person|named person|accuracy owner|coverage owner|support|engineering|operations|product|oncall|on call( function)?)$") | not) and
-    (normalized | test("\\b(team|teams|department|group|queue|committee|board|council|everyone|distribution list|mailing list)\\b") | not);
+    (normalized | test("\\b(team|teams|squad|department|group|org|organi[sz]ation|queue|committee|board|council|everyone|everybody|all[- ]hands|distribution list|mailing list)\\b") | not);
   .ownership.escalation_path as $path |
   ($path | type == "object") and
   ($path.escalates_to | named_role) and
@@ -91,7 +91,7 @@ jq -e '
   def named_role:
     type == "string" and (normalized | length > 0) and
     (normalized | test("^(the )?(tbd|todo|pending|unknown|na|none|owner|someone|somebody|person|named person|accuracy owner|coverage owner|support|engineering|operations|product|oncall|on call( function)?)$") | not) and
-    (normalized | test("\\b(team|teams|department|group|queue|committee|board|council|everyone|distribution list|mailing list)\\b") | not);
+    (normalized | test("\\b(team|teams|squad|department|group|org|organi[sz]ation|queue|committee|board|council|everyone|everybody|all[- ]hands|distribution list|mailing list)\\b") | not);
   def real_date:
     type == "string" and test("^[0-9]{4}-[0-9]{2}-[0-9]{2}$") and
     (try ((strptime("%Y-%m-%d") | mktime | strftime("%Y-%m-%d")) == .) catch false);

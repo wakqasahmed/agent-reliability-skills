@@ -288,6 +288,8 @@ for label, name in (
     ("group", "Quality group"),
     ("queue", "Support queue"),
     ("committee", "Quality committee"),
+    ("squad", "Support squad"),
+    ("organisation", "Support organisation"),
     ("distribution list", "Support distribution list"),
     ("placeholder", "TBD"),
     ("generic function", "support"),
