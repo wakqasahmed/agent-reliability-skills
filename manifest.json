@@ -2,7 +2,7 @@
   "name": "agent-reliability-skills",
   "version": "0.1.0",
   "last_reviewed": "2026-09-11",
-  "skill_count": 8,
+  "skill_count": 9,
   "skills": [
     "00-agent-reliability-guardrails",
     "01-answer-surface-definition",
@@ -11,7 +11,8 @@
     "04-accuracy-sampling-plan",
     "05-error-budget-and-burn-alerting",
     "06-accuracy-ownership-separation",
-    "07-failure-to-regression-intake"
+    "07-failure-to-regression-intake",
+    "08-agent-reliability-readiness-review"
   ],
   "source_count": 6
 }
