@@ -6,6 +6,7 @@
     "skills/01-answer-surface-definition",
     "skills/02-input-exposure-inventory",
     "skills/03-abstention-policy-design",
-    "skills/04-accuracy-sampling-plan"
+    "skills/04-accuracy-sampling-plan",
+    "skills/05-error-budget-and-burn-alerting"
   ]
 }

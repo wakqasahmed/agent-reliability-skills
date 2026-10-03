@@ -42,9 +42,9 @@ Freshness window: 180 days.
 
 - Publisher: Google (Site Reliability Engineering Workbook, chapter 5, Alerting on SLOs)
 - Official URL: https://sre.google/workbook/alerting-on-slos/
-- Supported claim: Burn rate is how fast, relative to the objective, a service consumes its error budget; multiwindow multi-burn-rate alerting turns budget consumption into an actionable alert instead of alerting on individual failures.
+- Supported claim: Burn rate is how fast, relative to the objective, a service consumes its error budget; multiwindow multi-burn-rate alerting turns budget consumption into an actionable alert instead of alerting on individual failures. The chapter recommends paging on fast burns, opening a ticket for slow burns, and cautions that the approach needs enough traffic for a meaningful signal in each window.
 - Specification version: SRE Workbook, 1st edition
-- Last verified: 2026-09-11
+- Last verified: 2026-10-03
 
 ## SRC-SR-26-2
 

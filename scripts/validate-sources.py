@@ -49,6 +49,11 @@ REQUIRED_CITATIONS: tuple[tuple[Path, str, tuple[str, ...]], ...] = (
         "Treat the Wald interval as having erratic coverage",
         ("SRC-BROWN-CAI-DASGUPTA-BINOMIAL",),
     ),
+    (
+        Path("skills/05-error-budget-and-burn-alerting/SKILL.md"),
+        "Define multiwindow, multi-burn-rate alerting",
+        ("SRC-SRE-BURN-RATE",),
+    ),
 )
 
 

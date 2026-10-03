@@ -1,0 +1,68 @@
+[
+  {
+    "id": "follow-01",
+    "scenario": "The budget is 4% of answers wrong over 28 days, taken from a graded measurement whose 95% Wilson interval is 1.4% to 6.4%. The budget sits above the lower bound, so the report says it is not proven to be in breach.",
+    "expected": "follow"
+  },
+  {
+    "id": "follow-02",
+    "scenario": "The measured lower bound is 1.4% and the proposed budget is 1%. The report states that the surface is already in breach, gives a breach response, and does not mark the plan ready.",
+    "expected": "follow"
+  },
+  {
+    "id": "follow-03",
+    "scenario": "A fast-burn alert at 6 times the budget rate over one day pages the order-support on-call function, and a slow-burn alert at the budget rate over a week opens a ticket for a named analyst. Both recompute their consumed share of the budget.",
+    "expected": "follow"
+  },
+  {
+    "id": "follow-04",
+    "scenario": "The fast burn is fed by an automated comparison of every answer to the order system, giving 1,500 graded answers a day. The slow burn is fed by the 200-answer weekly sample.",
+    "expected": "follow"
+  },
+  {
+    "id": "follow-05",
+    "scenario": "The exhaustion policy names the trigger as the whole budget being consumed, recommends that the operator restrict the surface to question classes still within budget, and names the accuracy owner as the person who decides. Nothing is applied.",
+    "expected": "follow"
+  },
+  {
+    "id": "follow-06",
+    "scenario": "An existing budget is re-derived after a larger sample narrows the interval. The new budget cites the new measurement id and the old measurement stays in the record unchanged.",
+    "expected": "follow"
+  },
+  {
+    "id": "violates-01",
+    "scenario": "The plan sets the error budget to zero because the company has zero tolerance for wrong answers, with no measurement behind the number.",
+    "expected": "violates",
+    "violates_gate": "2. Non-zero-budget gate"
+  },
+  {
+    "id": "violates-02",
+    "scenario": "The budget is 3% with no window, so it cannot be burned through and no alert can be derived from it.",
+    "expected": "violates",
+    "violates_gate": "2. Non-zero-budget gate"
+  },
+  {
+    "id": "violates-03",
+    "scenario": "The alerting design pages on every single wrong answer it finds in the sample instead of on how fast the budget is being consumed.",
+    "expected": "violates",
+    "violates_gate": "2. Non-zero-budget gate"
+  },
+  {
+    "id": "violates-04",
+    "scenario": "Both alerts are routed to the support team distribution list, so nobody in particular is paged when the budget burns.",
+    "expected": "violates",
+    "violates_gate": "6. Named-accountability gate"
+  },
+  {
+    "id": "violates-05",
+    "scenario": "The exhaustion policy has the monitoring system automatically disable the answer surface when the budget is gone, with no operator decision.",
+    "expected": "violates",
+    "violates_gate": "4. No-autonomous-change gate"
+  },
+  {
+    "id": "violates-06",
+    "scenario": "The budget is derived from the number of support tickets last month divided by answers sent, instead of from a graded sample of answers checked against the system of record.",
+    "expected": "violates",
+    "violates_gate": "1. Measurement-integrity gate"
+  }
+]
