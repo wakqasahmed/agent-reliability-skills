@@ -22,7 +22,7 @@ failing check makes the deliverable `HOLD`.
   `sample_size` (04, `budget_with_sample_size`); `alert_recipient` (05, `alert_recipient_name`);
   `accuracy_owner` (06, no retrieval item).
 - A named role is a person or a specific on-call function. A team, department, queue, placeholder
-  or blank is not (gate 6).
+  (`TBD`, `TBC`, `unassigned`, `nobody`, `-`) or blank is not (gate 6).
 
 ## The surface state is set and the route follows its order of work
 
@@ -48,7 +48,7 @@ jq -e '
 ## The four retrieval items are listed once each, with evidence and real contract fields
 
 A paragraph in place of the list fails, and so does an item that points at a field no skill in
-`01` through `07` defines.
+`01` through `07` defines. Evidence is at least three words, so `yes`, `found` or `-` is not evidence.
 
 ```bash
 jq -e '
@@ -63,7 +63,7 @@ jq -e '
   ([.readiness.retrieval_test[].id] | sort) == ($required | keys | sort) and
   all(.readiness.retrieval_test[];
     (.present | type == "boolean") and
-    (.evidence | type == "string" and test("\\S") and
+    (.evidence | type == "string" and test("\\S") and ([scan("[A-Za-z0-9]+")] | length >= 3) and
       (ascii_downcase | gsub("^\\s+|\\s+$"; "") | test("^(tbd|todo|pending|unknown|n/?a|none|placeholder|later|yes|ok)$") | not)) and
     (.id as $id | .points_to as $points |
       ($points | type == "array") and
@@ -75,7 +75,7 @@ jq -e '
 ## A present item is backed by what was retrieved
 
 `present: true` needs the value behind it: one sentence each for scope and refusal, an
-acknowledgement date against every input, a non-zero budget with a unit, a window and a sample size,
+acknowledgement date against every input, a budget above zero and below 100% with a unit, a window and a sample size,
 and a named alert recipient. A zero target spelled in prose fails anywhere in the report (gates 1, 2
 and 6).
 
@@ -83,10 +83,22 @@ and 6).
 jq -e '
   def nonblank: type == "string" and test("\\S");
   def named:
-    nonblank and
-    (ascii_downcase | gsub("[^a-z0-9 ]"; "") | gsub("\\s+"; " ") | gsub("^ | $"; "")
-     | test("^(tbd|todo|pending|unknown|na|none|owner|someone|somebody|person|support|engineering|operations|product|oncall|on call)$") | not) and
-    (ascii_downcase | test("\\b(team|teams|department|group|queue|committee|distribution list|mailing list)\\b") | not);
+    type == "string" and test("[\\p{L}\\p{N}]") and
+    (ascii_downcase | gsub("[^\\p{L}\\p{N}]+"; " ") | gsub("^ | $"; "") as $n
+     | ($n | test("^(tbd|todo|pending|unknown|na|n a|none|name|owner|someone|somebody|person|support|engineering|operations|product|oncall|on call|open)$") | not) and
+       ($n | test("(^| )(tbd|tbc|tba|todo|unknown|unassigned|unnamed|vacant|undefined|null|nobody|noone|none|someone|somebody|anyone|everyone|no one|no owner|not assigned|to be (decided|determined|confirmed|assigned|named))( |$)") | not)) and
+    (ascii_downcase | test("\\b(team|teams|department|group|queue|committee|distribution list|mailing list|squad|pod|guild|tribe|division|organisation|organization|org)\\b") | not);
+  def placeholder_free:
+    type == "string" and test("[\\p{L}\\p{N}]") and
+    (ascii_downcase | gsub("[^\\p{L}\\p{N}]+"; " ") | gsub("^ | $"; "")
+     | test("(^| )(tbd|tbc|tba|todo|unknown|unassigned|unnamed|vacant|undefined|null|nobody|noone|none|na|n a|no one|not assigned)( |$)") | not);
+  def budget_fraction:
+    .value as $v | .unit as $u |
+    if ($v | type) != "number" then null
+    elif $u == "fraction_of_answers" then $v
+    elif $u == "percent_of_answers" then $v / 100
+    elif $u == "errors_per_1000_answers" then $v / 1000
+    else null end;
   def one_sentence: nonblank and (test("[.!?]\\s+[A-Za-z0-9]") | not);
   def real_date:
     type == "string" and test("^[0-9]{4}-[0-9]{2}-[0-9]{2}$") and
@@ -100,12 +112,12 @@ jq -e '
    else true end) and
   (if $present.input_list_with_acknowledgement_dates
    then ($r.retrieved.inputs | type == "array" and length > 0 and
-         all(.[]; (.source_id | nonblank) and (.owning_team | nonblank) and
+         all(.[]; (.source_id | nonblank) and (.owning_team | placeholder_free) and
                   (.acknowledged_at | real_date) and (.acknowledged_at <= (now | strftime("%Y-%m-%d")))))
    else true end) and
   (if $present.budget_with_sample_size
    then ($r.retrieved.error_budget | type == "object" and
-         (.value | type == "number" and . > 0) and
+         (budget_fraction | . != null and . > 0 and . < 1) and
          (.unit as $u | ["fraction_of_answers", "percent_of_answers", "errors_per_1000_answers"] | index($u) != null) and
          (.window | type == "string" and test("^[1-9][0-9]*[hdw]$")) and
          (.sample_size | type == "number" and . > 0 and floor == .))
@@ -155,10 +167,11 @@ person or specific on-call function is a missing `accuracy_owner`, routed to
 ```bash
 jq -e '
   def named:
-    type == "string" and test("\\S") and
-    (ascii_downcase | gsub("[^a-z0-9 ]"; "") | gsub("\\s+"; " ") | gsub("^ | $"; "")
-     | test("^(tbd|todo|pending|unknown|na|none|owner|someone|somebody|person|support|engineering|operations|product|oncall|on call)$") | not) and
-    (ascii_downcase | test("\\b(team|teams|department|group|queue|committee|distribution list|mailing list)\\b") | not);
+    type == "string" and test("[\\p{L}\\p{N}]") and
+    (ascii_downcase | gsub("[^\\p{L}\\p{N}]+"; " ") | gsub("^ | $"; "") as $n
+     | ($n | test("^(tbd|todo|pending|unknown|na|n a|none|name|owner|someone|somebody|person|support|engineering|operations|product|oncall|on call|open)$") | not) and
+       ($n | test("(^| )(tbd|tbc|tba|todo|unknown|unassigned|unnamed|vacant|undefined|null|nobody|noone|none|someone|somebody|anyone|everyone|no one|no owner|not assigned|to be (decided|determined|confirmed|assigned|named))( |$)") | not)) and
+    (ascii_downcase | test("\\b(team|teams|department|group|queue|committee|distribution list|mailing list|squad|pod|guild|tribe|division|organisation|organization|org)\\b") | not);
   .readiness as $r |
   .guardrail_status as $guardrails |
   (["READY", "HOLD"] | index($r.status) != null) and
@@ -177,8 +190,9 @@ jq -e '
 ## Commerce concerns are delegated, not answered here
 
 For a storefront, catalogue, feed, policy and protocol readiness go to `agentic-commerce-skills`
-with `answered_here` false. For anything else the delegation list is empty. No report key assesses
-a commerce concern.
+with `answered_here` false. For anything else the delegation list is empty. Only the documented
+keys are allowed in the report, in `readiness` and in `commerce_delegation`, so no key can carry an
+assessment of a commerce concern.
 
 ```bash
 jq -e '
@@ -193,7 +207,10 @@ jq -e '
         (["catalogue", "feed", "policy", "protocol"] - $c.delegated_concerns == []) and
         ($c.answered_here == false)
    else ($c.delegated_concerns == []) and ($c | has("delegate_to") | not) and ($c | has("url") | not) end) and
-  (.readiness | keys | all(.[]; ascii_downcase | test("catalog|feed|protocol|policy|checkout|product") | not))
+  (($c | keys) - ["storefront", "delegate_to", "url", "delegated_concerns", "answered_here"] == []) and
+  (($c.delegated_concerns | length) == ($c.delegated_concerns | unique | length)) and
+  ((.readiness | keys) - ["surface_state", "route", "retrieval_test", "retrieved", "missing", "commerce_delegation", "status"] == []) and
+  ((keys) - ["readiness", "recommendations", "guardrail_status"] == [])
 ' "$REPORT"
 ```
 

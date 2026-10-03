@@ -53,7 +53,7 @@ that already exists is measured, owned and paged for.
 3. Record what was found in `readiness.retrieved`, so that `present` is backed by values and not by a
    yes: `scope_statement` and `refusal_rule` (one sentence each), `inputs[]` with `source_id`,
    `owning_team` and `acknowledged_at`, `error_budget` with `value`, `unit`, `window` and
-   `sample_size`, `alert_recipient`, and `accuracy_owner`. A budget of zero is not a budget (gate 2),
+   `sample_size`, `alert_recipient`, and `accuracy_owner`. A budget of zero, or of 100% or more, is not a budget (gate 2),
    an alert reaching a team or a queue is not a name (gate 6), and a rate with no sample size is not a
    measurement (gate 1), so none of those makes an item `present`.
 4. Route each missing item to the skill that produces it. For every item that is not `present`, add

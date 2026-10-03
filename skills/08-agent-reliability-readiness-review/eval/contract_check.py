@@ -380,6 +380,10 @@ for identifier in ITEM_IDS:
         lambda r, i=identifier: item(r, i)["points_to"].append("answer_surface.tone_of_voice"))
     add(1, f"item {identifier} points at a commerce field",
         lambda r, i=identifier: item(r, i)["points_to"].append("catalogue.feed_status"))
+for identifier in ITEM_IDS:
+    for short in ("yes.", "found", "-", "Present"):
+        add(1, f"item with one-word evidence {short!r}: {identifier}",
+            lambda r, i=identifier, s=short: item(r, i).update(evidence=s))
 add(1, "duplicate item", lambda r: ready(r)["retrieval_test"].append(copy.deepcopy(ready(r)["retrieval_test"][0])))
 add(1, "unknown extra item", lambda r: ready(r)["retrieval_test"].append({**copy.deepcopy(ready(r)["retrieval_test"][0]), "id": "catalogue_readiness"}))
 
@@ -413,6 +417,11 @@ add_ready(2, "one of two inputs unacknowledged",
 add_ready(2, "budget present with no budget", lambda r: retrieved(r).update(error_budget=None))
 add_ready(2, "budget is prose", lambda r: retrieved(r).update(error_budget="Four percent"))
 add_ready(2, "budget of zero", lambda r: retrieved(r)["error_budget"].update(value=0))
+for value, unit in ((1, "fraction_of_answers"), (1.5, "fraction_of_answers"), (100, "percent_of_answers"),
+                    (250, "percent_of_answers"), (1000, "errors_per_1000_answers")):
+    add_ready(2, f"budget of {value} {unit} is the whole answer set or more",
+              lambda r, v=value, u=unit: retrieved(r)["error_budget"].update(value=v, unit=u))
+add_ready(2, "input with a placeholder owning team", lambda r: retrieved(r)["inputs"][0].update(owning_team="TBD"))
 add_ready(2, "negative budget", lambda r: retrieved(r)["error_budget"].update(value=-0.04))
 add_ready(2, "budget as a string", lambda r: retrieved(r)["error_budget"].update(value="0.04"))
 add_ready(2, "budget with no value", lambda r: retrieved(r)["error_budget"].pop("value"))
@@ -465,6 +474,15 @@ add(3, "missing entry for an item that is present",
     lambda r: ready(r)["missing"].extend(missing_entries("scope_statement")))
 add(3, "missing entry for an input list that is present",
     lambda r: ready(r)["missing"].extend(missing_entries("owner_acknowledgements")))
+
+# Commerce assessments cannot ride along in extra keys.
+add(5, "extra readiness key with a commerce assessment", lambda r: ready(r).update(sitemap_ok=False))
+add(5, "extra readiness key discoverability score", lambda r: ready(r).update(discoverability_score=72))
+add(5, "extra delegation key with findings",
+    lambda r: delegation(r).update(findings=["GTIN missing on most SKUs"]))
+add(5, "extra top-level key with a storefront audit", lambda r: r.update(storefront_audit={"catalogue": "weak"}))
+add(5, "delegated concerns repeat", lambda r: delegation(r).update(
+    delegated_concerns=["catalogue", "catalogue", "feed", "policy", "protocol"]))
 
 # Section 4: READY and HOLD.
 for label, owner in (
@@ -643,6 +661,8 @@ for state, numbers in ORDERS.items():
 # A READY with an unnamed accuracy owner is impossible whatever else is true: sweep owner values on a READY report.
 unnamed_owners = ["", " ", "TBD", "tbd", "TODO", "pending", "unknown", "n/a", "none", "owner", "someone", "support",
                   "Support team", "the support team", "Quality queue", "Quality committee", "On-call", "operations",
+                  "TBC", "TBA", "-", "?", "nobody", "No one", "Unassigned", "not assigned", "vacant", "to be decided",
+                  "No owner", "N/A - none", "TBD (Priya?)", "Quality squad", "Platform guild",
                   None, 0, False, [], {}]
 for owner in unnamed_owners:
     report = mutated(ready_report, lambda r, o=owner: retrieved(r).update(accuracy_owner=o))
