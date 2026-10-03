@@ -50,6 +50,6 @@ Freshness window: 180 days.
 
 - Publisher: Board of Governors of the Federal Reserve System, Office of the Comptroller of the Currency, and Federal Deposit Insurance Corporation
 - Official URL: https://www.federalreserve.gov/supervisionreg/srletters/SR2602.htm
-- Supported claim: Effective challenge of a model is performed by individuals with sufficient independence to maintain objectivity, as well as the organizational standing and influence to effect any change. Supersedes and replaces SR 11-7 (2011).
-- Specification version: SR 26-2, issued 17 April 2026
-- Last verified: 2026-09-11
+- Supported claim: Effective challenge of a model is performed by individuals with sufficient independence to maintain objectivity, as well as the organizational standing and influence to effect any change. Supersedes and replaces SR 11-7 (2011) and SR 21-8 (2021). The guidance is written for bank model risk management and states that generative and agentic AI models are outside its scope, so it is cited for the principle only.
+- Specification version: SR 26-2, issued 17 April 2026 (the quoted wording is in its attachment, SR2602a1.pdf)
+- Last verified: 2026-10-03

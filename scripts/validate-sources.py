@@ -30,6 +30,11 @@ REQUIRED_CITATIONS: tuple[tuple[Path, str, tuple[str, ...]], ...] = (
         ("SRC-SRE-BURN-RATE",),
     ),
     (
+        Path("skills/06-accuracy-ownership-separation/SKILL.md"),
+        "Verify the accuracy owner has standing to act",
+        ("SRC-SR-26-2",),
+    ),
+    (
         Path("skills/00-agent-reliability-guardrails/SKILL.md"),
         "sufficient independence to maintain objectivity",
         ("SRC-SR-26-2",),
