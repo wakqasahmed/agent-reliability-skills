@@ -10,9 +10,10 @@ failing check makes the deliverable `BLOCK`.
   `conflicting_inputs` go to `source_owner`; `out_of_scope_answered` goes to `scope_owner`;
   `wrong_from_correct_inputs` goes to `accuracy_owner`.
 - Case text is every string in a case except identifiers and dates (`id`, `violates_gate`,
-  measurement ids, `closed_on`). It is scanned for: email addresses (including `[at]`, `(at)` and
-  "at ... dot ..." spellings), phone numbers (eight or more digits with up to two separator characters between digits, after
-  ISO dates are removed), any run of six or more digits, order, account, customer, invoice, ticket,
+  measurement ids, `closed_on`). It is scanned for: email addresses and handles (any `@` before a
+  letter or digit, and `[at]`, `(at)`, `{at}` and "at ... dot ..." spellings), phone numbers (eight or more digits with up to two separator characters between digits, after
+  ISO dates are removed), any run of six or more digits (also when glued to letters, as in
+  `ORD123456`), order, account, customer, invoice, ticket,
   tracking, booking and reference numbers, `#` numbers, `ABC-123456` style codes, UUIDs, and a
   greeting or title followed by a name. Prose fields are also scanned for first-person wording,
   which means customer text was pasted rather than reduced to a shape. These are heuristics: a
@@ -27,17 +28,19 @@ failing check makes the deliverable `BLOCK`.
 ## Every case has a failure class, and the class decides who fixes it
 
 A missing or unknown class fails, and so does a fixer from the wrong role. The fixer is a person
-or a specific on-call function, never a team, queue or placeholder (gate 6).
+or a specific on-call function, never a team, queue or placeholder such as `TBD`, `TBC`,
+`unassigned` or `nobody` (gate 6).
 
 ```bash
 jq -e '
   {"missing_input": "source_owner", "stale_input": "source_owner", "conflicting_inputs": "source_owner",
    "out_of_scope_answered": "scope_owner", "wrong_from_correct_inputs": "accuracy_owner"} as $roles |
   def named:
-    type == "string" and test("\\S") and
-    (ascii_downcase | gsub("[^a-z0-9 ]"; "") | gsub("\\s+"; " ") | gsub("^ | $"; "")
-     | test("^(tbd|todo|pending|unknown|na|none|owner|someone|somebody|person|support|engineering|operations|product|oncall|on call)$") | not) and
-    (ascii_downcase | test("\\b(team|teams|department|group|queue|committee|distribution list|mailing list)\\b") | not);
+    type == "string" and test("[\\p{L}\\p{N}]") and
+    (ascii_downcase | gsub("[^\\p{L}\\p{N}]+"; " ") | gsub("^ | $"; "") as $n
+     | ($n | test("^(tbd|todo|pending|unknown|na|n a|none|name|owner|someone|somebody|person|support|engineering|operations|product|oncall|on call|open)$") | not) and
+       ($n | test("(^| )(tbd|tbc|tba|todo|unknown|unassigned|unnamed|vacant|undefined|null|nobody|noone|none|someone|somebody|anyone|everyone|no one|no owner|not assigned|to be (decided|determined|confirmed|assigned|named))( |$)") | not)) and
+    (ascii_downcase | test("\\b(team|teams|department|group|queue|committee|distribution list|mailing list|squad|pod|guild|tribe|division|organisation|organization|org)\\b") | not);
   (.regression_cases | type == "array" and length > 0) and
   all(.regression_cases[];
     type == "object" and
@@ -72,11 +75,12 @@ jq -e '
   def sans_dates: gsub("[0-9]{4}-[0-9]{2}-[0-9]{2}"; "");
   def dirty:
     sans_dates |
-    (test("[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*\\.[A-Za-z]{2,}") or
-     test("[A-Za-z0-9._-]+\\s*(\\[at\\]|\\(at\\))\\s*[A-Za-z0-9-]+") or
+    (test("[@\uff20]\\s*[A-Za-z0-9]") or
+     test("[A-Za-z0-9._-]+\\s*(\\[at\\]|\\(at\\)|\\{at\\})\\s*[A-Za-z0-9-]+") or
      test("\\bat\\s+[a-z0-9-]+\\s+dot\\s+[a-z]{2,}"; "i") or
      test("\\+?[0-9](?:[\\s().-]{0,2}[0-9]){7,}") or
-     test("\\b[0-9]{6,}\\b") or
+     test("[0-9]{6,}") or
+     test("\\b[A-Za-z]{2,6}[0-9]{5,}\\b") or
      test("\\b(order|ord|account|acct|customer|cust|invoice|ticket|tracking|booking|reference|ref)\\b[\\s#:._-]*(no\\.?|num(ber)?|id)?[\\s#:._-]*[a-z]{0,5}[_-]?[0-9]{4,}"; "i") or
      test("#[0-9]{4,}") or
      test("\\b[A-Z]{2,6}[-_][0-9]{4,}\\b") or
@@ -129,10 +133,11 @@ repeats that `graded_against` and names the `grader` and the finding.
 ```bash
 jq -e '
   def named:
-    type == "string" and test("\\S") and
-    (ascii_downcase | gsub("[^a-z0-9 ]"; "") | gsub("\\s+"; " ") | gsub("^ | $"; "")
-     | test("^(tbd|todo|pending|unknown|na|none|owner|someone|somebody|person|support|engineering|operations|product|oncall|on call)$") | not) and
-    (ascii_downcase | test("\\b(team|teams|department|group|queue|committee|distribution list|mailing list)\\b") | not);
+    type == "string" and test("[\\p{L}\\p{N}]") and
+    (ascii_downcase | gsub("[^\\p{L}\\p{N}]+"; " ") | gsub("^ | $"; "") as $n
+     | ($n | test("^(tbd|todo|pending|unknown|na|n a|none|name|owner|someone|somebody|person|support|engineering|operations|product|oncall|on call|open)$") | not) and
+       ($n | test("(^| )(tbd|tbc|tba|todo|unknown|unassigned|unnamed|vacant|undefined|null|nobody|noone|none|someone|somebody|anyone|everyone|no one|no owner|not assigned|to be (decided|determined|confirmed|assigned|named))( |$)") | not)) and
+    (ascii_downcase | test("\\b(team|teams|department|group|queue|committee|distribution list|mailing list|squad|pod|guild|tribe|division|organisation|organization|org)\\b") | not);
   def system_of_record:
     type == "string" and test("\\S") and
     (ascii_downcase | test("transcript|conversation|chat log|the agent|its own output|self-grade|same model|ticket|complaint") | not);
@@ -168,10 +173,11 @@ sample size. Re-running a case in skill-model-bench is not that measurement.
 ```bash
 jq -e '
   def named:
-    type == "string" and test("\\S") and
-    (ascii_downcase | gsub("[^a-z0-9 ]"; "") | gsub("\\s+"; " ") | gsub("^ | $"; "")
-     | test("^(tbd|todo|pending|unknown|na|none|owner|someone|somebody|person|support|engineering|operations|product|oncall|on call)$") | not) and
-    (ascii_downcase | test("\\b(team|teams|department|group|queue|committee|distribution list|mailing list)\\b") | not);
+    type == "string" and test("[\\p{L}\\p{N}]") and
+    (ascii_downcase | gsub("[^\\p{L}\\p{N}]+"; " ") | gsub("^ | $"; "") as $n
+     | ($n | test("^(tbd|todo|pending|unknown|na|n a|none|name|owner|someone|somebody|person|support|engineering|operations|product|oncall|on call|open)$") | not) and
+       ($n | test("(^| )(tbd|tbc|tba|todo|unknown|unassigned|unnamed|vacant|undefined|null|nobody|noone|none|someone|somebody|anyone|everyone|no one|no owner|not assigned|to be (decided|determined|confirmed|assigned|named))( |$)") | not)) and
+    (ascii_downcase | test("\\b(team|teams|department|group|queue|committee|distribution list|mailing list|squad|pod|guild|tribe|division|organisation|organization|org)\\b") | not);
   def real_date:
     type == "string" and test("^[0-9]{4}-[0-9]{2}-[0-9]{2}$") and
     (try ((strptime("%Y-%m-%d") | mktime | strftime("%Y-%m-%d")) == .) catch false);

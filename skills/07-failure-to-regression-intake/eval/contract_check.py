@@ -337,6 +337,9 @@ add(0, "no fix_owner_role", del_case("fix_owner_role"))
 for label, name in (
     ("team", "Support team"), ("department", "Order operations department"), ("queue", "Support queue"),
     ("placeholder", "TBD"), ("generic function", "support"), ("blank", ""), ("number", 7),
+    ("TBC placeholder", "TBC"), ("dash", "-"), ("nobody", "nobody"), ("unassigned", "Unassigned"),
+    ("placeholder with a hint", "TBD - Priya?"), ("not assigned", "Not assigned yet"),
+    ("squad", "Order squad"),
 ):
     add(0, f"fix_owner is a {label}", set_case("fix_owner", name))
 add(0, "no fix_owner", del_case("fix_owner"))
@@ -394,6 +397,11 @@ DIRTY = {
     "title with a name": "Ms Okafor asks where the parcel is.",
     "first person": "My parcel has not arrived and I was told it would.",
     "first person pronoun alone": "Asks what happens to me if the parcel is lost.",
+    "braced at": "Asks to resend the receipt to jo{at}example.",
+    "spaced email": "Asks to resend the receipt to jo . smith @ example . com.",
+    "social handle": "Asks why @jo_smith was charged twice.",
+    "glued order code": "Asks where ORD123456 is.",
+    "glued reference code": "Asks about AB123456 on a returned item.",
     "multi-line transcript": "Customer asks where it is.\nAgent says it shipped.",
 }
 CLEAN = [
