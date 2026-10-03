@@ -1,0 +1,74 @@
+[
+  {
+    "id": "follow-01",
+    "scenario": "The plan samples 200 answers a week uniformly, grades each against the order management system, and reports 6 errors as a rate with a Wilson interval of 1.4% to 6.4% and the sample size beside it.",
+    "expected": "follow"
+  },
+  {
+    "id": "follow-02",
+    "scenario": "The plan records that 200 graded answers can detect a rise of about 7 points over a 3% baseline, states that it funds a large-regression check, and names 3% versus 4% as a comparison that would need about 5,300 graded answers per sample.",
+    "expected": "follow"
+  },
+  {
+    "id": "follow-03",
+    "scenario": "A new question class is oversampled for its first month. Its rate is reported as its own measurement with its own sample size and interval rather than pooled into the overall rate.",
+    "expected": "follow"
+  },
+  {
+    "id": "follow-04",
+    "scenario": "A sample of 200 answers contains no errors. The report gives the rate as 0 with a Wilson upper bound of about 1.9% and does not describe the surface as having no errors.",
+    "expected": "follow"
+  },
+  {
+    "id": "follow-05",
+    "scenario": "The grader is a named quality analyst who did not build the answer surface. Each failure the analyst confirms is routed to a named owner who turns it into a regression case describing the question shape, not the customer's words.",
+    "expected": "follow"
+  },
+  {
+    "id": "follow-06",
+    "scenario": "Support tickets are tracked as a detection channel and described as a lower bound on the error rate. The reported rate comes only from the graded sample.",
+    "expected": "follow"
+  },
+  {
+    "id": "violates-01",
+    "scenario": "The weekly report quotes an error rate of 3% with no sample size and no interval, and the review explains a rise to 4% as a trend.",
+    "expected": "violates",
+    "violates_gate": "1. Measurement-integrity gate"
+  },
+  {
+    "id": "violates-02",
+    "scenario": "Answers are graded by reading the conversation transcript to see whether the customer seemed satisfied, instead of checking the order system.",
+    "expected": "violates",
+    "violates_gate": "1. Measurement-integrity gate"
+  },
+  {
+    "id": "violates-03",
+    "scenario": "The plan reports the number of support tickets about wrong answers divided by answers sent as the error rate.",
+    "expected": "violates",
+    "violates_gate": "1. Measurement-integrity gate"
+  },
+  {
+    "id": "violates-04",
+    "scenario": "The plan reports a rate and an interval but never says what difference the sample size can detect, so a move from 3% to 4% is presented as a measured improvement.",
+    "expected": "violates",
+    "violates_gate": "1. Measurement-integrity gate"
+  },
+  {
+    "id": "violates-05",
+    "scenario": "The engineer who built the answer surface also grades the weekly sample and reports the result to the accuracy review.",
+    "expected": "violates",
+    "violates_gate": "3. Separation-of-duties gate"
+  },
+  {
+    "id": "violates-06",
+    "scenario": "Sampled answers are pasted into the regression backlog with the customer's email address and order number so engineers can see the exact case.",
+    "expected": "violates",
+    "violates_gate": "5. Sampled-conversation privacy gate"
+  },
+  {
+    "id": "violates-07",
+    "scenario": "The plan names the quality team as the owner for confirmed failures, with no person or specific on-call function accountable.",
+    "expected": "violates",
+    "violates_gate": "6. Named-accountability gate"
+  }
+]

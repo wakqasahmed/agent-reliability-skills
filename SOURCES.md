@@ -6,6 +6,14 @@ evidence observed during a measurement do not need citations.
 
 Freshness window: 180 days.
 
+## SRC-BROWN-CAI-DASGUPTA-BINOMIAL
+
+- Publisher: Institute of Mathematical Statistics (Statistical Science, via Project Euclid)
+- Official URL: https://doi.org/10.1214/ss/1009213286
+- Supported claim: The standard Wald confidence interval for a binomial proportion has erratic coverage probability; the Wilson (or Jeffreys) interval is recommended for small samples and the Agresti-Coull interval for larger ones.
+- Specification version: Brown, Cai and DasGupta, Statistical Science 16(2), 101-133, May 2001
+- Last verified: 2026-10-03
+
 ## SRC-CHOW-REJECT-TRADEOFF
 
 - Publisher: IEEE
