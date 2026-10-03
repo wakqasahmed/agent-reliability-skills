@@ -44,6 +44,11 @@ REQUIRED_CITATIONS: tuple[tuple[Path, str, tuple[str, ...]], ...] = (
         "penalize confident errors more than abstentions",
         ("SRC-OPENAI-HALLUCINATION-EVALS",),
     ),
+    (
+        Path("skills/04-accuracy-sampling-plan/SKILL.md"),
+        "Treat the Wald interval as having erratic coverage",
+        ("SRC-BROWN-CAI-DASGUPTA-BINOMIAL",),
+    ),
 )
 
 
