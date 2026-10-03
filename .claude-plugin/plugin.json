@@ -9,6 +9,7 @@
     "skills/04-accuracy-sampling-plan",
     "skills/05-error-budget-and-burn-alerting",
     "skills/06-accuracy-ownership-separation",
-    "skills/07-failure-to-regression-intake"
+    "skills/07-failure-to-regression-intake",
+    "skills/08-agent-reliability-readiness-review"
   ]
 }

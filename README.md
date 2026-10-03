@@ -43,6 +43,8 @@ Download the repository as a ZIP from **Code → Download ZIP**, unzip it, and c
 
 **Start with `00-agent-reliability-guardrails`.** Every other skill in this pack loads it first, and a deliverable that fails one of its hard gates is `BLOCK` rather than operator-ready.
 
+**Not sure which skill you need?** Run [`08-agent-reliability-readiness-review`](skills/08-agent-reliability-readiness-review/SKILL.md). It is the entry point: it checks the four things below, routes each missing one to the skill that produces it, and returns `READY` or `HOLD`.
+
 | Skill | What it covers |
 |---|---|
 | [`00-agent-reliability-guardrails`](skills/00-agent-reliability-guardrails/SKILL.md) | Measurement integrity, non-zero budgets, separation of duties, no autonomous change, sampled-conversation privacy, named accountability. |
@@ -53,8 +55,9 @@ Download the repository as a ZIP from **Code → Download ZIP**, unzip it, and c
 | [`05-error-budget-and-burn-alerting`](skills/05-error-budget-and-burn-alerting/SKILL.md) | Non-zero error budget derived from a measured baseline, day-one breach reporting, fast- and slow-burn alerts that reach a named person, and a recommendation-only exhaustion policy. |
 | [`06-accuracy-ownership-separation`](skills/06-accuracy-ownership-separation/SKILL.md) | Distinct accuracy and coverage owners, unilateral authority with no veto, escalation path, review cadence, and a checkable one-minute retrieval test. |
 | [`07-failure-to-regression-intake`](skills/07-failure-to-regression-intake/SKILL.md) | Confirmed wrong answer to a sanitised, classified regression case that skill-model-bench loads unchanged, with the fix owner, the fix, and the later measurement that shows it stayed closed. |
+| [`08-agent-reliability-readiness-review`](skills/08-agent-reliability-readiness-review/SKILL.md) | Entry point: the four-item retrieval test, each missing item routed to the skill that produces it, and one `READY` or `HOLD` decision that names every missing artefact. Commerce storefront concerns are delegated to `agentic-commerce-skills`. |
 
-More skills are being added incrementally through tracked issues — the readiness-review entry point. See [Issues](https://github.com/wakqasahmed/agent-reliability-skills/issues) for current progress; this table is the source of truth for what actually ships today.
+See [Issues](https://github.com/wakqasahmed/agent-reliability-skills/issues) for current progress; this table is the source of truth for what actually ships today.
 
 ## The four things to have before an agent answers a customer
 
