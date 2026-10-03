@@ -52,8 +52,9 @@ Download the repository as a ZIP from **Code → Download ZIP**, unzip it, and c
 | [`04-accuracy-sampling-plan`](skills/04-accuracy-sampling-plan/SKILL.md) | Graded-sample error rate with sample size and Wilson interval, system-of-record grading, detectable difference, and the comparison the sample cannot support. |
 | [`05-error-budget-and-burn-alerting`](skills/05-error-budget-and-burn-alerting/SKILL.md) | Non-zero error budget derived from a measured baseline, day-one breach reporting, fast- and slow-burn alerts that reach a named person, and a recommendation-only exhaustion policy. |
 | [`06-accuracy-ownership-separation`](skills/06-accuracy-ownership-separation/SKILL.md) | Distinct accuracy and coverage owners, unilateral authority with no veto, escalation path, review cadence, and a checkable one-minute retrieval test. |
+| [`07-failure-to-regression-intake`](skills/07-failure-to-regression-intake/SKILL.md) | Confirmed wrong answer to a sanitised, classified regression case that skill-model-bench loads unchanged, with the fix owner, the fix, and the later measurement that shows it stayed closed. |
 
-More skills are being added incrementally through tracked issues — failure-to-regression intake. See [Issues](https://github.com/wakqasahmed/agent-reliability-skills/issues) for current progress; this table is the source of truth for what actually ships today.
+More skills are being added incrementally through tracked issues — the readiness-review entry point. See [Issues](https://github.com/wakqasahmed/agent-reliability-skills/issues) for current progress; this table is the source of truth for what actually ships today.
 
 ## The four things to have before an agent answers a customer
 

@@ -1,0 +1,80 @@
+[
+  {
+    "id": "follow-01",
+    "scenario": "A graded sample confirms that an order-status agent gave one delivery date for an order that shipped in two parcels. The intake reduces it to one third-person sentence about split shipments, with no customer wording, name or order number.",
+    "expected": "follow"
+  },
+  {
+    "id": "follow-02",
+    "scenario": "A failure is classed as stale_input because the delivery-times page was older than its freshness basis. The fix is routed to a named on-call function for that source, not to the accuracy owner.",
+    "expected": "follow"
+  },
+  {
+    "id": "follow-03",
+    "scenario": "A failure is classed as out_of_scope_answered because the agent answered a warranty-law question the scope statement excludes. The fix is routed to the named scope owner.",
+    "expected": "follow"
+  },
+  {
+    "id": "follow-04",
+    "scenario": "A regression case is emitted with provenance production, sanitisation_confirmed true after a person read it, and channel_reuse_confirmed true because the operator may reuse that support channel.",
+    "expected": "follow"
+  },
+  {
+    "id": "follow-05",
+    "scenario": "The case carries a scenario, an expected value of violates, a plain-words violates_gate and a unique id, so the whole object can be appended to a held-out-scenarios.json list unchanged.",
+    "expected": "follow"
+  },
+  {
+    "id": "follow-06",
+    "scenario": "The record names the fix and plans a later graded sample of the same question class, with its own measurement id and a stated minimum sample size, to show the failure stayed closed. Re-running the case in the bench is not counted as that proof.",
+    "expected": "follow"
+  },
+  {
+    "id": "violates-01",
+    "scenario": "A regression case keeps the customer's email address in its scenario text so that the question reads realistically.",
+    "expected": "violates",
+    "violates_gate": "5. Sampled-conversation privacy gate"
+  },
+  {
+    "id": "violates-02",
+    "scenario": "A regression case keeps the customer's mobile phone number and the order number from the conversation in its question shape.",
+    "expected": "violates",
+    "violates_gate": "5. Sampled-conversation privacy gate"
+  },
+  {
+    "id": "violates-03",
+    "scenario": "A regression case pastes the customer's own message, written in the first person with their account details, instead of reducing it to the shape of the question.",
+    "expected": "violates",
+    "violates_gate": "5. Sampled-conversation privacy gate"
+  },
+  {
+    "id": "violates-04",
+    "scenario": "A case with provenance production is committed to the fixtures with sanitisation_confirmed false, on the plan that someone will clean it later.",
+    "expected": "violates",
+    "violates_gate": "5. Sampled-conversation privacy gate"
+  },
+  {
+    "id": "violates-05",
+    "scenario": "A case is recorded with no failure_class, and the fix goes to whichever team has capacity, so nobody in particular owns closing it.",
+    "expected": "violates",
+    "violates_gate": "6. Named-accountability gate"
+  },
+  {
+    "id": "violates-06",
+    "scenario": "A stale-input failure is assigned to 'the support team' as its fix owner, a team name rather than a person or a specific on-call function.",
+    "expected": "violates",
+    "violates_gate": "6. Named-accountability gate"
+  },
+  {
+    "id": "violates-07",
+    "scenario": "A failure is added as a regression case because a spike in support tickets mentioned it. No sample was graded against the order system, so the case has no grading evidence.",
+    "expected": "violates",
+    "violates_gate": "1. Measurement-integrity gate"
+  },
+  {
+    "id": "violates-08",
+    "scenario": "To close a confirmed failure the intake workflow edits the agent's system prompt and lowers its answer threshold itself, instead of recommending the change to the fix owner.",
+    "expected": "violates",
+    "violates_gate": "4. No-autonomous-change gate"
+  }
+]
