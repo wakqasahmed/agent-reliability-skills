@@ -359,6 +359,9 @@ add(0, "rate without id", delete_from(first, "id"))
 add(0, "blank interval string", set_in(first, "interval", "  "))
 add(0, "interval string does not name the method", set_in(first, "interval", "95% interval 1.4% to 6.4%"))
 add(0, "interval string does not state its level", set_in(first, "interval", "Wilson interval 1.4% to 6.4%"))
+add(0, "interval string states bounds that disagree with interval_bounds", set_in(first, "interval", "95% Wilson interval 0.1% to 0.2%"))
+add(0, "interval string states a different level", set_in(first, "interval", "90% Wilson interval 1.4% to 6.4%"))
+add(0, "interval bounds missing while the string is present", lambda r: bounds(r).pop("lower"))
 add(0, "wrong Wilson lower bound", set_in(bounds, "lower", 0.0))
 add(0, "wrong Wilson upper bound", set_in(bounds, "upper", 0.0239))
 add(0, "Wald interval presented as the interval", lambda r: bounds(r).update(method="wald", lower=0.0064, upper=0.0536))
@@ -381,6 +384,10 @@ for label, value in (
     ("same model", "the same model that wrote the answer"),
     ("model self-grade", "model self-grading"),
     ("llm judge", "LLM judge"),
+    ("ticket count", "support ticket count"),
+    ("ticket volume", "ticket volume by week"),
+    ("complaint log", "complaints received"),
+    ("satisfaction survey", "customer satisfaction survey"),
     ("placeholder", "TBD"),
     ("blank", ""),
 ):
@@ -487,6 +494,9 @@ add_positive("two question classes measured separately", all_sections,
                  measurement("m-orders", 6, 200, baseline=0.03, comparison=0.04),
                  {**measurement("m-returns", 10, 120, baseline=0.08, comparison=0.1),
                   "selection_method": "oversampled_new_classes"}))
+add_positive("a ticketing system can be the system of record for ticket-status answers", all_sections,
+             with_measurement({**measurement("m-tickets", 6, 200, baseline=0.03, comparison=0.04),
+                               "graded_against": "helpdesk ticket system record for the ticket"}))
 add_positive("different non-transcript system of record", all_sections,
              with_measurement({**measurement("m-catalogue", 6, 200, baseline=0.03, comparison=0.04),
                                "graded_against": "product catalogue database"}))

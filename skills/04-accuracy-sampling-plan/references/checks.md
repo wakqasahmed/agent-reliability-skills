@@ -31,7 +31,8 @@ grid of rates and sample sizes, including the 3%, n = 200 case.
 ## Every reported rate carries a sample and a Wilson interval that recomputes
 
 An empty `measurements` array fails: this skill exists to produce a measurement. `interval` is the
-human-readable string, and `interval_bounds` is its numeric form; both must be present and agree.
+human-readable string, and `interval_bounds` is its numeric form; both must be present and agree
+(the string states the level and bounds within half a point of the numeric ones).
 
 ```bash
 jq -e '
@@ -53,6 +54,10 @@ jq -e '
       (zfor($b.level) != null) and
       (.interval | contains(($b.level * 100 | round | tostring) + "%")) and
       ($b.lower | type == "number") and ($b.upper | type == "number") and
+      ([.interval | scan("[0-9]+(?:\\.[0-9]+)?") | tonumber] as $nums |
+        any($nums[]; (. - ($b.level * 100) | absv) < 0.01) and
+        any($nums[]; (. - ($b.lower * 100) | absv) <= 0.5) and
+        any($nums[]; (. - ($b.upper * 100) | absv) <= 0.5)) and
       (wilson(.error_rate; .sample_size; zfor($b.level)) as $w |
         (($b.lower - $w.lower) | absv) <= 0.001 and (($b.upper - $w.upper) | absv) <= 0.001));
   (.measurements? | type == "array" and length > 0) and
@@ -64,15 +69,15 @@ jq -e '
 ## Graded against the system of record
 
 `graded_against` must name the order, catalogue, policy or account data the answer describes.
-Reject a transcript, a conversation or chat log, the agent's own output, the same model, or a
-placeholder.
+Reject a transcript, a conversation or chat log, the agent's own output, the same model, ticket or
+complaint counts, a survey or satisfaction score, or a placeholder.
 
 ```bash
 jq -e '
   all(.measurements[]?;
     (.graded_against | type == "string" and test("\\S")) and
     (.graded_against | ascii_downcase | gsub("^\\s+|\\s+$"; "") |
-      (test("transcript|conversation|chat (log|history)|session log|the agent|agent.s (own )?(output|answer|response)|its own|own output|self[- ]?grad|same model|the model|model output|llm[- ]?(judge|grader)") or
+      (test("transcript|conversation|chat (log|history)|session log|the agent|agent.s (own )?(output|answer|response)|its own|own output|self[- ]?grad|same model|the model|model output|llm[- ]?(judge|grader)|(ticket|complaint|contact)s? (count|volume|total|rate)|complaints?|csat|\\bnps\\b|survey|customer feedback") or
        test("^(tbd|todo|pending|unknown|n/?a|none|placeholder|later)$")) | not))
 ' "$REPORT"
 ```

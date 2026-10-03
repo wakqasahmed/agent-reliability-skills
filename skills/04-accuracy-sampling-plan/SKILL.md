@@ -50,7 +50,7 @@ before the review is booked: `large_regression` (a real jump, visible within the
    describe. Never the transcript, a conversation log, the agent's own output or the same model.
 3. Record the grading `rubric` and the `grader` (a person or a specific on-call function). A
    grader who also built the answer surface breaks the separation-of-duties gate (gate 3);
-   record `grader_built_surface` as `false` only when it is true.
+   record `grader_built_surface` as `false` only when the grader did not build it.
 4. For each `measurements[]` entry, give it a unique `id` (so later workflows can reference it)
    and record `error_rate` as a fraction (0.03, not 3), `sample_size`, and `interval` with its
    `interval_bounds` (Wilson, level 0.90, 0.95 or 0.99). A rate without both is a hard failure.
